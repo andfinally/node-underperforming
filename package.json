@@ -1,0 +1,16 @@
+{
+  "name": "underperforming",
+  "description": "Service that tells content people which articles are underperforming",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andfinally/node-underperforming.git"
+  },
+  "dependencies": {
+    "express": "^4.11.2",
+    "html-entities": "^1.1.2",
+    "moment": "^2.9.0",
+    "nodemon": "^1.3.7",
+    "request": "^2.53.0"
+  }
+}
