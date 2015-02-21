@@ -9,20 +9,29 @@ var Entities = require('html-entities').AllHtmlEntities;
 var entities = new Entities();
 
 router.get('/', function (req, res) {
-	request(config.postsApiUrl, function (error, response, body) {
-		if (!error) {
-			console.log(response.statusCode);
-			// console.log(body);
-			res.setHeader('Content-Type', 'application/json');
-			res.send(getList(body));
-			if (slackPayload) sendSlackNotification();
-		} else {
-			console.log(error);
-		}
-	});
+	getLatestPosts(res, true);
 });
 
-function getList(body) {
+function getLatestPosts(res, tellSlack) {
+	request(config.postsApiUrl, function (apiError, apiResponse, apiBody) {
+		if (!apiError) {
+			console.log(apiResponse.statusCode);
+			if (res) {
+				// Output a JSON response
+				res.setHeader('Content-Type', 'application/json');
+				res.send(getList(apiBody, tellSlack));
+			}
+			if (tellSlack && slackPayload) {
+				// Slack notification
+				sendSlackNotification();
+			}
+		} else {
+			console.log(apiError);
+		}
+	});
+}
+
+function getList(body, tellSlack) {
 	var postsJSON = JSON.parse(body),
 		inPosts = postsJSON.posts,
 		outPosts = {},
@@ -42,7 +51,7 @@ function getList(body) {
 	}
 	outPosts.metadata = [];
 	outPosts.metadata.push({'timestamp': now.toISOString()});
-	if (outPosts.posts.length) {
+	if (outPosts.posts.length && tellSlack) {
 		setSlackPayload(outPosts.posts);
 	}
 	return outPosts;
