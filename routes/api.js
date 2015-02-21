@@ -7,21 +7,37 @@ var moment = require('moment');
 var now = moment();
 var Entities = require('html-entities').AllHtmlEntities;
 var entities = new Entities();
+var schedule = require('node-schedule');
+
+// Set up scheduled task
+var rule = new schedule.RecurrenceRule();
+rule.minute = [0, 30];
+var j = schedule.scheduleJob(rule, function(){
+    console.log('SCHEDULED JOB.....');
+	getLatestPosts(null, true);
+});
 
 router.get('/', function (req, res) {
-	getLatestPosts(res, true);
+	getLatestPosts(res, false);
+});
+
+router.get('/slack', function (req, res) {
+	console.log('SLACK');
+	getLatestPosts(null, true);
+	res.status(200).send('SLACK');
 });
 
 function getLatestPosts(res, tellSlack) {
 	request(config.postsApiUrl, function (apiError, apiResponse, apiBody) {
+		console.log('NEWSFEED API RESPONSE ' + apiResponse.statusCode);
 		if (!apiError) {
-			console.log(apiResponse.statusCode);
+			var postList = getList(apiBody, tellSlack);
 			if (res) {
 				// Output a JSON response
 				res.setHeader('Content-Type', 'application/json');
-				res.send(getList(apiBody, tellSlack));
+				res.send(postList);
 			}
-			if (tellSlack && slackPayload) {
+			if (slackPayload) {
 				// Slack notification
 				sendSlackNotification();
 			}
@@ -44,20 +60,21 @@ function getList(body, tellSlack) {
 
 	for (var i = 0; i < 10; i++) {
 		var postDate = moment(inPosts[i].date);
-		if (postDate.isBetween(earlier, hourAgo) && inPosts[i].metrics.views < 1000) {
+		if (postDate.isBetween(earlier, hourAgo) && inPosts[i].metrics.views < 5000) {
 			inPosts[i].age = now.diff(postDate, 'minutes') + ' mins';
 			outPosts.posts.push(inPosts[i]);
 		}
 	}
 	outPosts.metadata = [];
 	outPosts.metadata.push({'timestamp': now.toISOString()});
-	if (outPosts.posts.length && tellSlack) {
+	if (tellSlack) {
 		setSlackPayload(outPosts.posts);
 	}
 	return outPosts;
 }
 
 function sendSlackNotification() {
+	console.log('SLACK NOTIFY');
 	request({
 		uri   : config.slackIncomingWebHookUrl,
 		method: 'POST',

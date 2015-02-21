@@ -10,8 +10,14 @@ http://www.lauradhamilton.com/how-to-set-up-a-nodejs-web-server-on-amazon-ec2
 
 Save a copy of `config-sample.js` as `config.js`.
 Enter the URLs for your [Slack Incoming WebHooks](https://api.slack.com/incoming-webhooks) and Post API.
-Access the JSON output of this app at http://<public IP>/api
-Local http://localhost:8080/api
+
+## URLs ##
+
+**JSON output:** http://XXX.XXX.XXX.XXX/api
+
+**Send Slack notification:** http://XXX.XXX.XXX.XXX/api/slack
+
+**Local** http://localhost:8080/api
 
 ## Forever ##
 
