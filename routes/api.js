@@ -9,7 +9,7 @@ var Entities = require('html-entities').AllHtmlEntities;
 var entities = new Entities();
 var schedule = require('node-schedule');
 
-// Set up scheduled task
+// Scheduled task for Slack notifications
 var rule = new schedule.RecurrenceRule();
 rule.minute = [0, 30];
 var j = schedule.scheduleJob(rule, function(){
@@ -17,23 +17,26 @@ var j = schedule.scheduleJob(rule, function(){
 	getLatestPosts(null, true);
 });
 
+// JSON output of results
 router.get('/', function (req, res) {
 	getLatestPosts(res, false);
 });
 
+// Triggers Slack notification on demand
 router.get('/slack', function (req, res) {
 	console.log('SLACK');
 	getLatestPosts(null, true);
 	res.status(200).send('SLACK');
 });
 
+// Grab latest post from the newsfeed API
 function getLatestPosts(res, tellSlack) {
 	request(config.postsApiUrl, function (apiError, apiResponse, apiBody) {
 		console.log('NEWSFEED API RESPONSE ' + apiResponse.statusCode);
 		if (!apiError) {
 			var postList = getList(apiBody, tellSlack);
 			if (res) {
-				// Output a JSON response
+				// Output JSON response
 				res.setHeader('Content-Type', 'application/json');
 				res.send(postList);
 			}
@@ -47,6 +50,7 @@ function getLatestPosts(res, tellSlack) {
 	});
 }
 
+// Pick the posts between 60 and 90 mins old with views less than 1,000
 function getList(body, tellSlack) {
 	var postsJSON = JSON.parse(body),
 		inPosts = postsJSON.posts,
@@ -67,12 +71,13 @@ function getList(body, tellSlack) {
 	}
 	outPosts.metadata = [];
 	outPosts.metadata.push({'timestamp': now.toISOString()});
-	if (tellSlack) {
+	if (outPosts.posts.length && tellSlack) {
 		setSlackPayload(outPosts.posts);
 	}
 	return outPosts;
 }
 
+// Send post request to Slack incoming webhook URL
 function sendSlackNotification() {
 	console.log('SLACK NOTIFY');
 	request({
@@ -93,6 +98,7 @@ function slackCallback(error, response, body) {
 	}
 }
 
+// Build payload for Slack notification
 function setSlackPayload(posts){
 	var articles = '';
 	posts.forEach(function(item){
