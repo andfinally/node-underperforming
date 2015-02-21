@@ -1,5 +1,5 @@
 # node-underperforming
-Node micro-service to tell content people which recent articles are underperforming. Gets data from Metro newsfeed API and sends notifications to Slack.
+Node microservice to tell content people which recent articles are underperforming. Gets data from Metro newsfeed API and sends notifications to Slack.
 
 ## Server setup ##
 
