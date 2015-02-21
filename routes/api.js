@@ -4,7 +4,6 @@ var router = express.Router();
 var request = require('request');
 var slackPayload;
 var moment = require('moment');
-var now = moment();
 var Entities = require('html-entities').AllHtmlEntities;
 var entities = new Entities();
 var schedule = require('node-schedule');
@@ -55,6 +54,7 @@ function getList(body, tellSlack) {
 	var postsJSON = JSON.parse(body),
 		inPosts = postsJSON.posts,
 		outPosts = {},
+		now = moment(),
 		earlier = now.clone(),
 		hourAgo = now.clone();
 
