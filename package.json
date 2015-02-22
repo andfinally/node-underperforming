@@ -1,6 +1,6 @@
 {
-  "name": "underperforming",
-  "description": "Service that tells content people which articles are underperforming",
+  "name": "node-underperforming",
+  "description": "Node microservice to tell content people which recent articles are underperforming",
   "main": "server.js",
   "repository": {
     "type": "git",
