@@ -1,5 +1,3 @@
-// http://api.metro.co.uk/news-feed/?number=50&sort-by=date
-
 var express = require('express');
 var app = express();
 var request = require('request');
