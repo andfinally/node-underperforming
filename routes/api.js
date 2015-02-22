@@ -2,7 +2,6 @@ var config = require('../config');
 var express = require('express');
 var router = express.Router();
 var request = require('request');
-var slackPayload;
 var moment = require('moment');
 var Entities = require('html-entities').AllHtmlEntities;
 var entities = new Entities();
@@ -11,19 +10,20 @@ var schedule = require('node-schedule');
 // Scheduled task for Slack notifications
 var rule = new schedule.RecurrenceRule();
 rule.minute = [0, 30];
-var j = schedule.scheduleJob(rule, function(){
-    console.log('SCHEDULED JOB.....');
+var j = schedule.scheduleJob(rule, function () {
+	conlog('Scheduled job');
 	getLatestPosts(null, true);
 });
 
 // JSON output of results
 router.get('/', function (req, res) {
+	conlog('URL request for JSON');
 	getLatestPosts(res, false);
 });
 
 // Triggers Slack notification on demand
 router.get('/slack', function (req, res) {
-	console.log('SLACK');
+	conlog('URL request for Slack notification');
 	getLatestPosts(null, true);
 	res.status(200).send('SLACK');
 });
@@ -31,26 +31,27 @@ router.get('/slack', function (req, res) {
 // Grab latest post from the newsfeed API
 function getLatestPosts(res, tellSlack) {
 	request(config.postsApiUrl, function (apiError, apiResponse, apiBody) {
-		console.log('NEWSFEED API RESPONSE ' + apiResponse.statusCode);
+		conlog('Newsfeed API response ' + apiResponse.statusCode);
 		if (!apiError) {
-			var postList = getList(apiBody, tellSlack);
+			var outPosts = getList(apiBody);
 			if (res) {
 				// Output JSON response
 				res.setHeader('Content-Type', 'application/json');
-				res.send(postList);
+				res.send(outPosts);
 			}
-			if (slackPayload) {
-				// Slack notification
-				sendSlackNotification();
+			if (tellSlack && outPosts.posts.length) {
+				// Tell Slack
+				conlog('Slack notification');
+				sendSlackNotification(outPosts.posts);
 			}
 		} else {
-			console.log(apiError);
+			conlog('Newsfeed API error ' + apiError);
 		}
 	});
 }
 
 // Pick the posts between 60 and 90 mins old with views less than 1,000
-function getList(body, tellSlack) {
+function getList(body) {
 	var postsJSON = JSON.parse(body),
 		inPosts = postsJSON.posts,
 		outPosts = {},
@@ -70,43 +71,37 @@ function getList(body, tellSlack) {
 		}
 	}
 	outPosts.metadata = [];
-	outPosts.metadata.push({'timestamp': now.toISOString()});
-	if (outPosts.posts.length && tellSlack) {
-		setSlackPayload(outPosts.posts);
-	}
+	outPosts.metadata.push({'timestamp': now.format('D MMM YYYY HH:mm:ss')});
 	return outPosts;
 }
 
 // Send post request to Slack incoming webhook URL
-function sendSlackNotification() {
-	console.log('SLACK NOTIFY');
+function sendSlackNotification(posts) {
 	request({
 		uri   : config.slackIncomingWebHookUrl,
 		method: 'POST',
-		body  : JSON.stringify(slackPayload)
+		body  : makeSlackPayload(posts)
 	}, slackCallback);
 }
 
 function slackCallback(error, response, body) {
 	if (error) {
-		console.log(error);
+		conlog('Slack request error ' + error);
 	} else if (response.statusCode !== 200) {
-		// inform user that our Incoming WebHook failed
-		console.log(new Error('Incoming WebHook: ' + response.statusCode + ' ' + body));
-	} else {
-		//console.log(res.status(200).end());
+		conlog(new Error('Incoming WebHook: ' + response.statusCode + ' ' + body));
 	}
 }
 
 // Build payload for Slack notification
-function setSlackPayload(posts){
-	var articles = '';
-	posts.forEach(function(item){
+function makeSlackPayload(posts) {
+	var articles = '',
+		payload;
+	posts.forEach(function (item) {
 		articles += '<' + item.URL + '|' + entities.decode(item.title) + '>\n';
 		articles += 'Age: ' + item.age + '\n';
 		articles += 'Views: ' + item.metrics.views + '\n\n';
 	});
-	slackPayload = {
+	payload = {
 		"text"       : "These articles haven't taken off yet.",
 		"attachments": [
 			{
@@ -122,6 +117,11 @@ function setSlackPayload(posts){
 			}
 		]
 	};
+	return JSON.stringify(payload);
+}
+
+function conlog(message) {
+	console.log(moment().format('D MMM YYYY HH:mm:ss') + ' | ' + message);
 }
 
 module.exports = router;
