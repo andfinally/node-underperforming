@@ -33,7 +33,7 @@ Save a copy of `config-sample.js` as `config.js`. Enter the URLs for your [Slack
 
 `sudo crontab -u ec2-user -e`
 
-`@reboot /usr/local/bin/start -a -o out.log -e err.log /home/ec2-user/metro/underperforming/server.js`
+`@reboot /usr/local/bin/forever start -a -o out.log -e err.log /home/ec2-user/metro/underperforming/server.js`
 
 and check with
 
