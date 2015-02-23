@@ -1,6 +1,5 @@
 var config = require('../config');
-var express = require('express');
-var router = express.Router();
+var router = require('express').Router();
 var request = require('request');
 var moment = require('moment');
 var Entities = require('html-entities').AllHtmlEntities;
@@ -37,6 +36,8 @@ function getLatestPosts(res, tellSlack) {
 			if (res) {
 				// Output JSON response
 				res.setHeader('Content-Type', 'application/json');
+				res.header('Access-Control-Allow-Origin', '*');
+  				res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 				res.send(outPosts);
 			}
 			if (tellSlack && outPosts.posts.length) {

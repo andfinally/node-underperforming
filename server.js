@@ -4,7 +4,9 @@ var request = require('request');
 var port = 8080;
 app.use(express.static(__dirname + '/public'));
 
-var routes = require('./routes')(app);
+// Routes
+app.use('/', require('./routes/home'));
+app.use('/underperforming', require('./routes/underperforming'));
 
 app.listen(port);
 console.log('Magic happens on port ' + port);

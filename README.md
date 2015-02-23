@@ -13,11 +13,11 @@ Save a copy of `config-sample.js` as `config.js`. Enter the URLs for your [Slack
 
 ## URLs ##
 
-**JSON output on demand, no Slack notification:** http://XXX.XXX.XXX.XXX/api
+**JSON output on demand, no Slack notification:** http://XXX.XXX.XXX.XXX/underperforming
 
-**Send Slack notification on demand:** http://XXX.XXX.XXX.XXX/api/slack
+**Send Slack notification on demand:** http://XXX.XXX.XXX.XXX/underperforming/slack
 
-**Local** http://localhost:8080/api
+**Local** http://localhost:8080/underperforming
 
 ## Forever ##
 
