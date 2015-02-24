@@ -7,15 +7,9 @@ Node microservice to notify content people which recent articles are underperfor
 
 [http://www.lauradhamilton.com/how-to-set-up-a-nodejs-web-server-on-amazon-ec2](http://www.lauradhamilton.com/how-to-set-up-a-nodejs-web-server-on-amazon-ec2)
 
-[http://blog.angelengineering.com/2014/01/17/add-nodejs-to-an-existing-amazon-ec2-lamp-server/](http://blog.angelengineering.com/2014/01/17/add-nodejs-to-an-existing-amazon-ec2-lamp-server/)
-
 ## App setup ##
 
 Save a copy of `config-sample.js` as `config.js`. Enter the URLs for your [Slack Incoming WebHooks](https://api.slack.com/incoming-webhooks) and Post API.
-
-## Automating Node startup ##
-
-See the readme in /startup-automation.
 
 ## URLs ##
 
