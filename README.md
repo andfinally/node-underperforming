@@ -19,7 +19,13 @@ Save a copy of `config-sample.js` as `config.js`. Enter the URLs for your [Slack
 
 **Local** http://localhost:8080/underperforming
 
-## Forever ##
+## Auto restart ##
+
+Add a startup shell script to /etc/init.d on the server and use `chkconfig` to add it to the autorun processes. See the README.md in /startup-automation.
+
+## Random notes ##
+
+### Forever ###
 
 [http://blog.nodejitsu.com/keep-a-nodejs-server-up-with-forever/](http://blog.nodejitsu.com/keep-a-nodejs-server-up-with-forever/)
 
@@ -27,20 +33,7 @@ Save a copy of `config-sample.js` as `config.js`. Enter the URLs for your [Slack
 
 `forever start -a -o out.log -e err.log server.js`
 
-### Auto-restarting Forever with crontab ###
-
-[http://rusticode.com/2013/04/05/lannn-installing-node-on-aws/](http://rusticode.com/2013/04/05/lannn-installing-node-on-aws/)
-
-`sudo crontab -u ec2-user -e`
-
-`@reboot /usr/local/bin/forever start -a -o out.log -e err.log /home/ec2-user/metro/underperforming/server.js`
-
-and check with
-
-`sudo crontab -u ec2-user -l`
-
-
-## Check running processes ##
+### Check running processes ###
 
 `ps aux | grep node`
 
