@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.6.0/bootstrap-table.min.css">
+	<title>Viral</title>
+	<style>
+
+		.fixed-table-loading {
+			display: none;
+		}
+
+		.container {
+			margin-bottom: 50px;
+		}
+
+	</style>
+</head>
+
+<body>
+
+	<div class="container">
+
+		<div class="page-header">
+			<h1>These articles might go viral</h1>
+		</div>
+
+		<table id="table"
+			data-row-style="rowStyle"
+			data-sort-name="viralScore"
+			data-sort-order="desc"
+			data-show-columns="true"
+			data-search="true"
+			data-classes="table-hover table-condensed"
+			data-striped="true">
+		    <thead>
+		    <tr>
+		        <th data-field="name" data-sortable="true" data-switchable="false" class="col-md-6">Title</th>
+		        <th data-field="viralScore" data-sortable="true" data-cell-style="cellStyle" data-formatter="decimalFormatter" class="col-md-1">Viral score</th>
+		        <th data-field="sharesPerView" data-sortable="true" data-formatter="decimalFormatter" data-visible="false" class="col-md-1">Shares per view</th>
+		        <th data-field="clicksPerShare" data-sortable="true" data-formatter="decimalFormatter" data-visible="false" class="col-md-1">Clicks per share</th>
+		        <th data-field="totalShares" data-sortable="true" class="col-md-1">Total shares</th>
+		        <th data-field="views" data-sortable="true" class="col-md-1">Views</th>
+		    </tr>
+		    </thead>
+		    {{#posts}}
+		    <tr>
+		    	<td><a href="{{URL}}">{{{short_title}}}</a></td>
+		    	<td>{{metrics.viralScore}}</td>
+		    	<td>{{metrics.sharesPerView}}</td>
+		    	<td>{{metrics.clicksPerShare}}</td>
+		    	<td>{{metrics.totalShares}}</td>
+		    	<td>{{metrics.views}}</td>
+		    </tr>
+		    {{/posts}}
+		</table>
+
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.6.0/bootstrap-table.min.js"></script>
+	<script>
+
+	$(function(){
+		$('#table').bootstrapTable();
+	});
+
+	function decimalFormatter(value) {
+    	return parseFloat(value).toFixed(2);
+	}
+
+	function cellStyle(value, row, index) {
+		return {classes: 'info'};
+	}
+
+	</script>
+</body>
+</html>
