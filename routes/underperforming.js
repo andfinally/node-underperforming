@@ -12,19 +12,19 @@ var utils = require('../lib/utils');
 var rule = new schedule.RecurrenceRule();
 rule.minute = [0, 30];
 var j = schedule.scheduleJob(rule, function () {
-	utils.conlog('Scheduled job - underperforming');
+	utils.conlog('underperforming | Scheduled job starting');
 	getLatestPosts(null, true);
 });
 
 // JSON output of results
 router.get('/', function (req, res) {
-	utils.conlog('URL request for JSON');
+	utils.conlog('underperforming | URL request for JSON | /');
 	getLatestPosts(res, false);
 });
 
 // Triggers Slack notification on demand
 router.get('/slack', function (req, res) {
-	utils.conlog('URL request for Slack notification');
+	utils.conlog('underperforming | URL request for Slack notification | /slack');
 	getLatestPosts(null, true);
 	res.status(200).send('SLACK');
 });
@@ -32,7 +32,7 @@ router.get('/slack', function (req, res) {
 // Grab latest posts from the newsfeed API
 function getLatestPosts(res, tellSlack) {
 	request(config.postsApiUrl, function (apiError, apiResponse, apiBody) {
-		utils.conlog('Newsfeed API response ' + apiResponse.statusCode);
+		utils.conlog('underperforming | Newsfeed API response ' + apiResponse.statusCode);
 		if (!apiError) {
 			var outPosts = getList(apiBody);
 			if (res) {
@@ -44,12 +44,12 @@ function getLatestPosts(res, tellSlack) {
 			}
 			if (tellSlack && outPosts.posts.length) {
 				// Tell Slack
-				utils.conlog('Slack notification');
-				slack.send(makeSlackPayload(outPosts.posts));
+				utils.conlog('underperforming | Slack notification');
+				slack.send('underperforming', makeSlackPayload(outPosts.posts));
 			}
 		} else {
-			utils.conlog('Newsfeed API error ' + apiError);
-			res.status(500).send('Newsfeed API error');
+			utils.conlog('underperforming | Newsfeed API error ' + apiError);
+			res.status(500).send('underperforming - Newsfeed API error');
 		}
 	});
 }

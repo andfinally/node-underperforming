@@ -12,28 +12,27 @@ var utils = require('../lib/utils');
 
 // Scheduled task for Slack notifications
 var rule = new schedule.RecurrenceRule();
-rule.minute = [0, 30];
+rule.minute = [10, 40];
 var j = schedule.scheduleJob(rule, function () {
-	utils.conlog('Scheduled job - viral');
+	utils.conlog('viral | Scheduled job starting');
 	getLatestPosts(null, 'slack');
 });
 
 // HTML output of results
 router.get('/', function (req, res) {
-	utils.conlog('URL request for HTML');
+	utils.conlog('viral | URL request for HTML | /');
 	getLatestPosts(res, 'html');
 });
 
 // JSON output of results
 router.get('/json', function (req, res) {
-	utils.conlog('URL request for JSON');
+	utils.conlog('viral | URL request for JSON | /json');
 	getLatestPosts(res, 'json');
 });
 
 function sendHTML(res, outPosts) {
 	var page = fs.readFileSync('./html/viral.htm', "utf8");
 	var html = mustache.to_html(page, outPosts);
-	//console.log(html)
 	res.setHeader('Content-Type', 'text/html; charset=UTF-8');
 	res.send(html);
 }
@@ -47,16 +46,16 @@ function sendJSON(res, outPosts) {
 
 function sendSlack(outPosts) {
 	if (outPosts.posts.length) {
-		slack.send(makeSlackPayload(outPosts.posts));
+		slack.send('viral', makeSlackPayload(outPosts.posts));
 	}
 }
 
 // Grab latest posts from the newsfeed API
 function getLatestPosts(res, outputFormat) {
 	request(config.postsApiUrl, function (apiError, apiResponse, apiBody) {
-		utils.conlog('Newsfeed API response ' + apiResponse.statusCode);
+		utils.conlog('viral | Newsfeed API response ' + apiResponse.statusCode);
 		var outPosts;
-		var threshold = outputFormat == 'slack' ? 0.4 : 0.1;
+		var threshold = outputFormat == 'slack' ? 40 : 10;
 		if (!apiError) {
 			outPosts = getList(apiBody, threshold);
 			outPosts.metadata.status = 200;
@@ -75,15 +74,8 @@ function getLatestPosts(res, outputFormat) {
 					break;
 			}
 		} else {
-			utils.conlog('Newsfeed API error ' + apiError);
-			outPosts = {
-				posts: [],
-				metadata: {
-					status: 500,
-					message: 'Newsfeed API error ' + apiError.toString(),
-					timestamp: moment().format('D MMM YYYY HH:mm:ss')
-				}
-			}
+			utils.conlog('viral | Newsfeed API error ' + apiError);
+			res.status(500).send('viral - Newsfeed API error');
 		}
 	});
 }
@@ -108,11 +100,11 @@ function getList(body, threshold) {
 		}
 		if (inPosts[i].metrics.clicksPerShare == 0) {
 			// clicksPerShare 0, don't bother multiplying
-			inPosts[i].metrics.viralScore = inPosts[i].metrics.sharesPerView;
+			inPosts[i].metrics.viralScore = utils.convertToScore(inPosts[i].metrics.sharesPerView);
 			if (inPosts[i].metrics.viralScore >= threshold) outPosts.posts.push(inPosts[i]);
 			continue;
 		}
-		inPosts[i].metrics.viralScore = inPosts[i].metrics.sharesPerView * inPosts[i].metrics.clicksPerShare;
+		inPosts[i].metrics.viralScore = utils.convertToScore(inPosts[i].metrics.sharesPerView * inPosts[i].metrics.clicksPerShare);
 		if (inPosts[i].metrics.viralScore >= threshold) outPosts.posts.push(inPosts[i]);
 	}
 
@@ -138,9 +130,8 @@ function makeSlackPayload(posts) {
 	var articles = '',
 		payload;
 	posts.forEach(function (item) {
-		var viralScore = utils.convertToPercent(parseFloat(item.metrics.viralScore).toFixed(2));
 		articles += '<' + item.URL + '|' + entities.decode(item.title) + '>\n';
-		articles += 'Viral score: ' + viralScore + '\n';
+		articles += 'Viral score: ' + item.metrics.viralScore + '\n';
 		articles += 'Total shares: ' + utils.addCommas(item.metrics.totalShares) + '\n\n';
 	});
 	payload = {
