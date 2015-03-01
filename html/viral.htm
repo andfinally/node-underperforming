@@ -39,11 +39,11 @@
 		    <thead>
 		    <tr>
 		        <th data-field="name" data-sortable="true" data-switchable="false" class="col-md-6">Title</th>
-		        <th data-field="viralScore" data-sortable="true" data-cell-style="cellStyle" data-formatter="decimalFormatter" class="col-md-1">Viral score</th>
-		        <th data-field="sharesPerView" data-sortable="true" data-formatter="decimalFormatter" data-visible="false" class="col-md-1">Shares per view</th>
-		        <th data-field="clicksPerShare" data-sortable="true" data-formatter="decimalFormatter" data-visible="false" class="col-md-1">Clicks per share</th>
-		        <th data-field="totalShares" data-sortable="true" class="col-md-1">Total shares</th>
-		        <th data-field="views" data-sortable="true" class="col-md-1">Views</th>
+		        <th data-field="viralScore" data-sortable="true" data-cell-style="cellStyle" data-formatter="addPercentSign" data-align="right" class="col-md-1">Viral score</th>
+		        <th data-field="sharesPerView" data-sortable="true" data-formatter="decimalFormatter" data-visible="false" data-align="right" class="col-md-1">Shares per view</th>
+		        <th data-field="clicksPerShare" data-sortable="true" data-formatter="decimalFormatter" data-visible="false" data-align="right" class="col-md-1">Clicks per share</th>
+		        <th data-field="totalShares" data-sortable="true" data-formatter="addCommas" data-align="right" class="col-md-1">Total shares</th>
+		        <th data-field="views" data-sortable="true" data-formatter="addCommas" data-align="right" class="col-md-1">Views</th>
 		    </tr>
 		    </thead>
 		    {{#posts}}
@@ -76,6 +76,19 @@
 	function cellStyle(value, row, index) {
 		return {classes: 'info'};
 	}
+
+	// Add thousand separators
+	function addCommas(nStr) {
+		nStr += '';
+		var x = nStr.split('.');
+		var x1 = x[0];
+		var x2 = x.length > 1 ? '.' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+			x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		return x1 + x2;
+	};
 
 	</script>
 </body>
