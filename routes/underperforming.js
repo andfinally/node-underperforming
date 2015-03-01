@@ -49,6 +49,7 @@ function getLatestPosts(res, tellSlack) {
 			}
 		} else {
 			utils.conlog('Newsfeed API error ' + apiError);
+			res.status(500).send('Newsfeed API error');
 		}
 	});
 }
