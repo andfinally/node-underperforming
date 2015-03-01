@@ -1,6 +1,7 @@
 var config = require('../config');
 var router = require('express').Router();
 var request = require('request');
+var path = require('path');
 var fs = require('fs');
 var mustache = require("mustache");
 var moment = require('moment');
@@ -31,7 +32,7 @@ router.get('/json', function (req, res) {
 });
 
 function sendHTML(res, outPosts) {
-	var page = fs.readFileSync('./html/viral.htm', "utf8");
+	var page = fs.readFileSync(path.join(__dirname, '../html/viral.htm'), 'utf8');
 	var html = mustache.to_html(page, outPosts);
 	res.setHeader('Content-Type', 'text/html; charset=UTF-8');
 	res.send(html);
