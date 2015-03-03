@@ -53,7 +53,8 @@ function sendSlack(outPosts) {
 
 // Grab latest posts from the newsfeed API
 function getLatestPosts(res, outputFormat) {
-	request(config.postsApiUrl, function (apiError, apiResponse, apiBody) {
+	var postsApiurl = process.env.postsApiUrl || config.postsApiUrl;
+	request(postsApiurl, function (apiError, apiResponse, apiBody) {
 		utils.conlog('viral | Newsfeed API response ' + apiResponse.statusCode);
 		var outPosts;
 		var threshold = outputFormat == 'slack' ? 40 : 10;

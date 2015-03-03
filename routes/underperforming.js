@@ -31,7 +31,8 @@ router.get('/slack', function (req, res) {
 
 // Grab latest posts from the newsfeed API
 function getLatestPosts(res, tellSlack) {
-	request(config.postsApiUrl, function (apiError, apiResponse, apiBody) {
+	var postsApiurl = process.env.postsApiUrl || config.postsApiUrl;
+	request(postsApiurl, function (apiError, apiResponse, apiBody) {
 		utils.conlog('underperforming | Newsfeed API response ' + apiResponse.statusCode);
 		if (!apiError) {
 			var outPosts = getList(apiBody);

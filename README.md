@@ -9,7 +9,7 @@ Node microservice to notify content people which recent articles are underperfor
 
 ## App setup ##
 
-Save a copy of `config-sample.js` as `config.js`. Enter the URLs for your [Slack Incoming WebHooks](https://api.slack.com/incoming-webhooks) and Post API.
+Save a copy of `config-sample.js` as `config.js`. Enter the URLs for your [Slack Incoming WebHooks](https://api.slack.com/incoming-webhooks) and Post API. Alternatively, set the config properties in config-sample.js as environment variables. 
 
 ## URLs ##
 
