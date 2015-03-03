@@ -1,8 +1,8 @@
 #!/bin/sh
-#
-# chkconfig: 35 99 99
-# description: Script to restart Node.js /home/ec2-user/underperforming/server.js
-#
+ #
+ # chkconfig: 35 99 99
+ # description: Script to restart Node.js /home/ec2-user/underperforming/server.js
+ #
 
 
 . /etc/rc.d/init.d/functions

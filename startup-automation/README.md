@@ -31,3 +31,26 @@ If the terminal complains that
 it could be because forever was unable to start properly the last time. Delete the lock file for the app to unlock
 
 `sudo rm -f /var/lock/subsys/underperforming`
+
+Make sure you shut down the forever process using the proper command. If you simply do `forever stop 0` and try to start 
+the process with `node server.js` you may get an error message like
+
+`events.js:85
+      throw er; // Unhandled 'error' event
+            ^
+Error: listen EADDRINUSE
+    at exports._errnoException (util.js:746:11)`
+    
+In this situation shut down properly using the full command.
+
+
+
+
+`cd startup-automation/`
+`sudo cp nodeup /etc/init.d`
+`sudo chmod a+x /etc/init.d/nodeup`
+`sudo chkconfig nodeup on`
+`sudo /etc/init.d/nodeup start`
+
+
+`forever start -w -al server.log server.js`
