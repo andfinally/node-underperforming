@@ -136,7 +136,7 @@ function makeSlackPayload(posts) {
 		articles += 'Total shares: ' + utils.addCommas(item.metrics.totalShares) + '\n\n';
 	});
 	payload = {
-		"text"       : "Articles with viral potential:",
+		"text"       : "Articles with viral promise:",
 		"attachments": [
 			{
 				"fallback": "List of articles with a high viral score.",
