@@ -7,3 +7,4 @@ config-local.js
 *.log
 startup-automation/foreverup-bak
 startup-automation/nodeup
+nohup.out
