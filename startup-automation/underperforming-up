@@ -1,0 +1,11 @@
+#!/bin/bash
+# chkconfig: 345 20 80
+# description: Starts underperforming server.js in nodemon
+# processname: node-underperforming
+
+echo 'Starting underperforming in forever'
+cd /home/ec2-user/underperforming
+
+#./activator start
+
+nohup /usr/local/bin/nodemon server.js&

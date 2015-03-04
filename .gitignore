@@ -2,7 +2,8 @@
 .idea
 node_modules
 bak
+config.js
 config-local.js
 *.log
-startup-automation/foreverup
+startup-automation/foreverup-bak
 startup-automation/nodeup
