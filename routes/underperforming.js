@@ -70,7 +70,7 @@ function getList(body) {
 
 	for (var i = 0; i < 10; i++) {
 		var postDate = moment(inPosts[i].date);
-		if (postDate.isBetween(earlier, hourAgo) && inPosts[i].metrics.views < 1000) {
+		if (postDate.isBetween(earlier, hourAgo) && inPosts[i].metrics.views < 150) {
 			inPosts[i].age = now.diff(postDate, 'minutes') + ' mins';
 			outPosts.posts.push(inPosts[i]);
 		}
