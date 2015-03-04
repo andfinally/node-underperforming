@@ -23,6 +23,26 @@ Save a copy of `config-sample.js` as `config.js`. Enter the URLs for your [Slack
 
 Add a startup shell script to /etc/init.d on the server and use `chkconfig` to add it to the autorun processes. See the README.md in /startup-automation.
 
+The `nodeup` shell script in the startup directory runs server.js in forever in watch mode. The app should restart on file change, crash or reboot. To enable the process on a Red Hat environment:
+
+Copy the script to /etc/init.d:
+ 
+`cd startup`
+
+`sudo cp nodeup /etc/init.d`
+
+Give it executable permission:
+
+`sudo chmod a+x /etc/init.d/nodeup`
+
+Add it to chkconfig:
+
+`sudo chkconfig nodeup on`
+
+Do the initial start:
+
+`sudo /etc/init.d/nodeup start`
+
 ## Random notes ##
 
 ### Forever ###
@@ -32,6 +52,8 @@ Add a startup shell script to /etc/init.d on the server and use `chkconfig` to a
 [http://rusticode.com/2013/04/05/lannn-installing-node-on-aws/](http://rusticode.com/2013/04/05/lannn-installing-node-on-aws/)
 
 `forever start -a -o out.log -e err.log server.js`
+
+`forever start -w --watchDirectory=$APP_DIR --sourceDir=$APP_DIR -al $APP_DIR/server.log server.js`
 
 ### Check running processes ###
 

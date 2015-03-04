@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# chkconfig: 35 99 99
+# description: Keeps /home/ec2-user/underperforming/server.js running in node even after reboot - http://labs.telasocial.com/nodejs-forever-daemon/
+#
+
+. /etc/rc.d/init.d/functions
+
+APP_DIR="/home/ec2-user/underperforming"
+
+export PATH=$PATH:/usr/local/bin
+export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+
+case "$1" in
+  start)
+  exec /usr/local/bin/forever start -w --watchDirectory=$APP_DIR --sourceDir=$APP_DIR -p /home/ec2-user/.forever -al $APP_DIR/server.log server.js
+  ;;
+stop)
+  exec /usr/local/bin/forever stop --sourceDir=$APP_DIR server.js
+  ;;
+*)
+  echo "Usage: /etc/init.d/nodeup {start|stop}"
+  exit 1
+  ;;
+esac
+
+exit 0
