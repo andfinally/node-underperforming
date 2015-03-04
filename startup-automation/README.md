@@ -43,9 +43,6 @@ Error: listen EADDRINUSE
     
 In this situation shut down properly using the full command.
 
-
-
-
 `cd startup-automation/`
 `sudo cp nodeup /etc/init.d`
 `sudo chmod a+x /etc/init.d/nodeup`
@@ -54,3 +51,5 @@ In this situation shut down properly using the full command.
 
 
 `forever start -w -al server.log server.js`
+
+`ps aux | grep node`
