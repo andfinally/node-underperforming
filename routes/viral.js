@@ -57,7 +57,7 @@ function getLatestPosts(res, outputFormat) {
 	request(postsApiurl, function (apiError, apiResponse, apiBody) {
 		utils.conlog('viral | Newsfeed API response ' + apiResponse.statusCode);
 		var outPosts;
-		var threshold = outputFormat == 'slack' ? 40 : 10;
+		var threshold = outputFormat == 'slack' ? 45 : 10;
 		if (!apiError) {
 			outPosts = getList(apiBody, threshold);
 			outPosts.metadata.status = 200;
