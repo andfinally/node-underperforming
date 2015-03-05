@@ -35,6 +35,7 @@ function sendHTML(res, outPosts) {
 	var page = fs.readFileSync(path.join(__dirname, '../html/viral.htm'), 'utf8');
 	var html = mustache.to_html(page, outPosts);
 	res.setHeader('Content-Type', 'text/html; charset=UTF-8');
+	res.setHeader('Cache-Control', 'max-age=60');
 	res.send(html);
 }
 
