@@ -25,14 +25,28 @@ router.get('/', function (req, res) {
 	getLatestPosts(res, 'html');
 });
 
+// HTML output for big screens
+router.get('/big', function (req, res) {
+	utils.conlog('viral | URL request for HTML big screen | /');
+	getLatestPosts(res, 'big');
+});
+
 // JSON output of results
 router.get('/json', function (req, res) {
 	utils.conlog('viral | URL request for JSON | /json');
 	getLatestPosts(res, 'json');
 });
 
-function sendHTML(res, outPosts) {
-	var page = fs.readFileSync(path.join(__dirname, '../html/viral.htm'), 'utf8');
+function sendHTML(res, outPosts, template) {
+	var templatePath = '../html/';
+	if (template && template == 'big.htm') {
+		// Only taking first 3 items
+		outPosts.posts = outPosts.posts.slice(0, 3);
+		templatePath += 'big.htm';
+	} else {
+		templatePath += 'viral.htm';
+	}
+	var page = fs.readFileSync(path.join(__dirname, templatePath), 'utf8');
 	var html = mustache.to_html(page, outPosts);
 	res.setHeader('Content-Type', 'text/html; charset=UTF-8');
 	res.setHeader('Cache-Control', 'max-age=60');
@@ -73,7 +87,11 @@ function getLatestPosts(res, outputFormat) {
 					break;
 
 				case 'html':
-					sendHTML(res, outPosts);
+					sendHTML(res, outPosts, 'viral.htm');
+					break;
+
+				case 'big':
+					sendHTML(res, outPosts, 'big.htm');
 					break;
 			}
 		} else {
@@ -95,7 +113,6 @@ function getList(body, threshold) {
 
 		// Calculate total shares for each post
 		inPosts[i].metrics.totalShares = inPosts[i].metrics.shares + inPosts[i].metrics.likes + inPosts[i].metrics.tweets;
-
 		// Calculate viralScore for each post, leaving out posts with no sharesPerView
 		if (!inPosts[i].metrics.sharesPerView) {
 			// sharesPerView 0 or undefined

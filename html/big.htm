@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="/css/bootstrap.cyborg.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.6.0/bootstrap-table.min.css">
+	<link rel="stylesheet" href="/css/style.css" />
+	<title>Viral promise</title>
+</head>
+
+<body class="big">
+
+<div class="container">
+
+	<div class="jumbotron">
+		<img src="/img/flame.svg" class="flame">
+		<div class="fire-side"><h1>ViralBot</h1>
+		</div>
+	</div>
+
+	<table id="big">
+		{{#posts}}
+		<tr>
+			<td colspan="2" class="title"><a href="{{URL}}">{{{short_title}}}</a></td>
+		</tr>
+		<tr>
+			<td class="score text-warning">{{metrics.viralScore}}</td>
+			<td class="prog">
+				<div class="progress">
+					<div class="progress-bar progress-bar-danger" style="width: {{metrics.viralScore}}%"></div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="space"></td>
+		</tr>
+		{{/posts}}
+	</table>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
