@@ -12,12 +12,12 @@ var slack = require('../lib/slack');
 var utils = require('../lib/utils');
 
 // Scheduled task for Slack notifications
-var rule = new schedule.RecurrenceRule();
+/*var rule = new schedule.RecurrenceRule();
 rule.minute = [10, 40];
 var j = schedule.scheduleJob(rule, function () {
 	utils.conlog('viral | Scheduled job starting');
 	getLatestPosts(null, 'slack');
-});
+});*/
 
 // HTML output of results
 router.get('/', function (req, res) {
