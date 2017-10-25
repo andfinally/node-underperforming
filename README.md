@@ -1,4 +1,4 @@
-# node-underperforming
+# ViralBot (a.k.a. node-underperforming)
 Little Node app to notify content people which recent articles are underperforming. Gets data from news API and sends a list of articles between 60 and 90 minutes old which have had less than 1,000 views as a Slack notification. Scheduled to run every half hour.
 
 ## Server setup ##
